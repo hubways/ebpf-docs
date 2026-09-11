@@ -37,8 +37,7 @@ A positive integer corresponding to the length of the resolved path name in `buf
 
 ## Usage
 
-!!! example "Docs could be improved"
-    This part of the docs is incomplete, contributions are very welcome
+`bpf_path_d_path` resolves kernel `struct path` (dentry+ mount) into a full pathname. It's most commonly paired with `bpf_get_task_exe_file()` or `bpf_get_file_xattr()` style kfuncs: those return a struct file *, and `bpf_path_d_path` is then called on `&file->f_path` to get the actual path string.
 
 ### Program types
 
