@@ -53,6 +53,27 @@ The following program types can make use of this kfunc:
 
 ### Example
 
-!!! example "Docs could be improved"
-    This part of the docs is incomplete, contributions are very welcome
 
+```c 
+SEC("lsm/task_kill")
+int BPF_PROG(log_kill_target, struct task_struct *p,
+             struct kernel_siginfo *info, int sig,
+             const struct cred *cred)
+{
+	struct file *exe_file;
+	char path_buf[128];
+	int ret;
+
+	exe_file = bpf_get_task_exe_file(p);
+	if (!exe_file)
+		return 0;
+
+	ret = bpf_path_d_path(&exe_file->f_path, path_buf,
+			      sizeof(path_buf));
+	if (ret > 0)
+		bpf_printk("kill target exe: %s\n", path_buf);
+
+	bpf_put_file(exe_file);
+	return 0;
+}
+```
